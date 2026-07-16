@@ -42,8 +42,13 @@ function isFileTypeSupported(type, supportedTypes) {
 
 }
 
-async function uploadFileToCloudinary(file, folder) {
+async function uploadFileToCloudinary(file, folder, quality) {
     const options = { folder };
+    console.log("temp filePath", file.tempFilePath);
+    if (quality) {
+        options.quality = quality;
+    }
+    options.resource_type = "auto";
     return await cloudinary.uploader.upload(file.tempFilePath, options);
 }
 //image upload ka handler
@@ -121,12 +126,26 @@ exports.videoUpload = async (req, res) => {
         console.log("File Type:", fileType);
 
 
-        //HW: add a upper limit of 5MB for video upload
+        //file supported or not
         if (!isFileTypeSupported(fileType, supportedTypes)) {
             return res.status(400).json({
                 success: false,
                 message: "file formate not supported",
             })
+
+        }
+
+        //HW: add a upper limit of 5MB for video upload
+
+        const maxVideoFileSize = 5 * 1024 * 1024;
+
+        if (file.size > maxVideoFileSize) {
+
+            return res.status(400).json({
+                success: false,
+                message: "video size should be less than 5MB"
+
+            });
 
         }
 
@@ -165,3 +184,64 @@ exports.videoUpload = async (req, res) => {
 }
 
 // imageSizeReducer
+
+exports.imageSizeReducer = async (req, res) => {
+
+    try {
+        //data fetch
+
+        const { name, tags, email } = req.body
+        // console.log(req.body);
+        console.log(name, tags, email);
+
+        //file fetch
+        const file = req.files.imageFile;
+        console.log(file);
+
+        //validation
+        const supportedTypes = ["jpg", "jpeg", "png"];
+        const fileType = file.name.split('.')[1].toLowerCase();
+        console.log("File Type:", fileType);
+
+
+        //quality 
+        if (!isFileTypeSupported(fileType, supportedTypes)) {
+            return res.status(400).json({
+                success: false,
+                message: "file formate not supported",
+            })
+
+        }
+
+        //file formate supported hai
+        // upload into cloudinary
+
+        const response = await uploadFileToCloudinary(file, "codehelp", 100);
+        console.log(response);
+
+        // save entry in DB 
+        const fileData = await File.create({
+            name,
+            tags,
+            email,
+            imageUrl: response.secure_url,
+        });
+        res.json({
+            success: true,
+            imageUrl: response.secure_url,
+            message: "image successfully uploaded"
+        })
+
+    }
+    catch (error) {
+        console.error(error);
+
+        res.status(400).json({
+            success: false,
+            message: error.message,
+            // message: "something went wrong",
+        });
+
+    }
+
+}
