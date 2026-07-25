@@ -47,5 +47,29 @@ exports.createSubSection = async (req, res) => {
 }
 
 //HW update sub section
+exports.updateSubSection = async (req, res) => {
+    try {
+        //get id
+        const { subSectionId, sectionId } = req.body;
+        //validated
+        if (!subSectionId || !sectionId) {
+            return res.status(400).json({
+                success: false,
+                message: "User ID not found",
+            })
+
+
+        }
+        //update on ID
+        const updatedDetails = await section.findByIDAndUpdate({ title, description, timeDuration, videoUrl, additionalUrl })
+        // what to update
+        //return response
+
+        return
+    }
+    catch (error) {
+
+    }
+}
 
 //HW delate SUB section

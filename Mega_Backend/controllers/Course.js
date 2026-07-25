@@ -125,3 +125,5 @@ exports.showAllCourse = async (req, res) => {
     }
 
 }
+
+// getCourseDetails
