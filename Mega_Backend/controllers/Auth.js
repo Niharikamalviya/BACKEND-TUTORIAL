@@ -94,7 +94,7 @@ exports.signUp = async (req, res) => {
 
 
         //2 passwor match
-        if (password !== confimPassword) {
+        if (password !== confirmPassword) {
             return res.status(400).json({
                 success: false,
                 message: 'Password and confirmpassword does not match, please try again'
@@ -104,7 +104,7 @@ exports.signUp = async (req, res) => {
 
 
         //check user already exist on not
-        const existingUser = await User.finOne({ email });
+        const existingUser = await User.findOne({ email });
         if (existingUser) {
             return res.status(400).json({
                 success: false,
