@@ -4,9 +4,9 @@ const app = express();
 
 //Routes
 const userRoutes = require("./routes/User");
-const profileRoutes = require("./routes/profileRoutes");
-const paymentRoutes = require("./routes/paymentRoutes");
-const courseRoutes = require("./routes/courseRoutes");
+const profileRoutes = require("./routes/profile");
+const paymentRoutes = require("./routes/payment");
+const courseRoutes = require("./routes/course");
 
 
 const database = require("./config/database");

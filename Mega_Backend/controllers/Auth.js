@@ -254,91 +254,91 @@ exports.login = async (req, res) => {
 
 //changePassworrd --> HM
 
-// exports.changePassword = async (req, res) => {
-//     try {
-//         //get oldpassword, new password, confirmNewpassword
-//         const { oldPassword, newPassword, confirmPassword } = req.body;
+exports.changePassword = async (req, res) => {
+    try {
+        //get oldpassword, new password, confirmNewpassword
+        const { oldPassword, newPassword, confirmPassword } = req.body;
 
-//         // # validate
+        // # validate
 
-//         // 1. check all fields are present or not
-//         if (!oldPassword || !newPassword || !confirmPassword) {
-//             return res.status(403).json({
-//                 success: false,
-//                 message: 'All fields are required',
-//             });
-//         }
+        // 1. check all fields are present or not
+        if (!oldPassword || !newPassword || !confirmPassword) {
+            return res.status(403).json({
+                success: false,
+                message: 'All fields are required',
+            });
+        }
 
-//         // 2. match both passwords
+        // 2. match both passwords
 
-//         if (newPassword !== confimPassword) {
-//             return res.status(400).json({
-//                 success: false,
-//                 message: 'Password and confirmpassword does not match, please try again'
-//             });
-//         }
+        if (newPassword !== confimPassword) {
+            return res.status(400).json({
+                success: false,
+                message: 'Password and confirmpassword does not match, please try again'
+            });
+        }
 
-//         // 3. fetch user from DB
+        // 3. fetch user from DB
 
-//         const userIsExist = await User.findOne({ email });
+        const userIsExist = await User.findOne({ email });
 
-//         if (!userIsExist) {
-//             return res.status(404).json({
-//                 success: false,
-//                 message: "user does not Found",
-//             });
-//         }
+        if (!userIsExist) {
+            return res.status(404).json({
+                success: false,
+                message: "user does not Found",
+            });
+        }
 
-//         // 4. Old password and newPassword same nhi hona chaiye
+        // 4. Old password and newPassword same nhi hona chaiye
 
-//         if (oldPassword === newPassword) {
-//             return res.status(400).json({
-//                 success: false,
-//                 message: "New password must be different from the old password",
-//             });
-//         }
+        if (oldPassword === newPassword) {
+            return res.status(400).json({
+                success: false,
+                message: "New password must be different from the old password",
+            });
+        }
 
-//         // 5. Old password verify to DB
+        // 5. Old password verify to DB
 
-//         const isPasswordMatched = await bcrypt.compare(oldPassword, user.password);
+        const isPasswordMatched = await bcrypt.compare(oldPassword, user.password);
 
-//         if (!isPasswordMatched) {
-//             return res.status(400).json({
-//                 success: false,
-//                 message: "Old password is incorrect",
-//             });
-//         }
+        if (!isPasswordMatched) {
+            return res.status(400).json({
+                success: false,
+                message: "Old password is incorrect",
+            });
+        }
 
-//         //hash password
-//         const hashedPassword = await bcrypt.hash(newpassword, 10);
+        //hash password
+        const hashedPassword = await bcrypt.hash(newpassword, 10);
 
-//         // update password in DB
+        // update password in DB
 
-//         const user = await User.create({
-//             newPassword: hashedPassword,
-//         })
-
-
-//         // send mail- password updated
-//         await mailSender(email, "Password Changed Successfully");
-
-//         //return response
-//         return res.status(200).json({
-//             success: true,
-//             message: 'Password changed Successfully',
-//             user,
-//         });
+        const user = await User.create({
+            newPassword: hashedPassword,
+        })
 
 
+        // send mail- password updated
+        await mailSender(email, "Password Changed Successfully");
 
-//     }
-//     catch (error) {
-//         console.log(error)
-//         return res.status(500).json({
-//             success: false,
-//             message: 'something went wrong while changing password,please try again.'
-//         })
+        //return response
+        return res.status(200).json({
+            success: true,
+            message: 'Password changed Successfully',
+            user,
+        });
 
-//     }
 
-// }
+
+    }
+    catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            success: false,
+            message: 'something went wrong while changing password,please try again.'
+        })
+
+    }
+
+}
