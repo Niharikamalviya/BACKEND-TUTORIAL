@@ -7,10 +7,10 @@ const OTPSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    otp: [{
+    otp: {
         type: String,
         required: true,
-    }],
+    },
     createdAt: {
         type: Date,
         default: Date.now(),

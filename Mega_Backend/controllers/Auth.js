@@ -1,4 +1,5 @@
 const User = require("../models/user");
+const Profile = require("../models/Profile");
 const OTP = require("../models/OTP");
 const otpGenerator = require("otp-generator");
 const bcrypt = require("bcrypt");
@@ -79,12 +80,12 @@ exports.signUp = async (req, res) => {
     try {
 
         //data fetch from request ki body
-        const { firstName, lastName, email, password, confirmPassword, accountType, contactNumer, otp
+        const { firstName, lastName, email, password, confirmPassword, accountType, contactNumber, otp
 
         } = req.body;
 
         //validate krlo
-        if (!firstName || !lastName || !email || !password || !confirmPassword || !otp) {
+        if (!firstName || !lastName || !email || !password || !confirmPassword || !otp || !accountType) {
             return res.status(403).json({
                 success: false,
                 message: "All fields are required",
@@ -119,13 +120,14 @@ exports.signUp = async (req, res) => {
         console.log(recentOtp);
 
         // validate OTP
-        if (recentOtp.length == 0) {
+        if (recentOtp.length === 0) {
             // OTP not found
             return res.status(400).json({
                 success: false,
                 message: 'OTP not Found',
             })
-        } else if (otp != recnetOtp.otp) {
+        }
+        else if (otp != recentOtp[0].otp) {
             //Invalid OTP
             return res.status(400).json({
                 success: false,
@@ -146,7 +148,7 @@ exports.signUp = async (req, res) => {
             contactNumber: null,
         });
 
-        const user = await user.create({
+        const user = await User.create({
             firstName,
             lastName,
             email,
